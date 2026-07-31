@@ -2,6 +2,8 @@ import { Text, View, StyleSheet } from "react-native";
 import { useEffect, useState } from "react";
 
 export default function Index() {
+
+  const [pokemon , Setpokemon] = useState([]);
   useEffect(() => {
     //! Fetch Pokemon
     fetchPokemon();
@@ -12,7 +14,7 @@ export default function Index() {
         "https://pokeapi.co/api/v2/pokemon/?limit=20",
       );
       const Data = await response.json();
-      console.log(Data);
+      Setpokemon(Data);
     } catch (erorr) {
       console.log(erorr);
     }
