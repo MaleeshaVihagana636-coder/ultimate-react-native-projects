@@ -1,9 +1,10 @@
-import { Text, View, StyleSheet, ScrollView } from "react-native";
+import { Text, View, StyleSheet, ScrollView, Image } from "react-native";
 import { useEffect, useState } from "react";
 
 interface Pokemon {
   name: string;
   url: string;
+  image: string;
 }
 
 export default function Index() {
@@ -20,7 +21,7 @@ export default function Index() {
       const Data = await response.json();
       // Fetch detailed info for each Pokémon in parallel
       const detailedPokemons = await Promise.all(
-        Data.results.map(async (pokemon:any) => {
+        Data.results.map(async (pokemon: any) => {
           const res = await fetch(pokemon.url);
           const details = await res.json();
           return {
@@ -39,6 +40,11 @@ export default function Index() {
     <ScrollView>
       {pokemon.map((pokemon) => (
         <View key={pokemon.name}>
+          {/* <Text>{pokemon.image}</Text> */}
+          <Image
+            source={{ uri: pokemon.image }}
+            style={{ width: 100, height: 100 }}
+          />
           <Text>{pokemon.name}</Text>
         </View>
       ))}
