@@ -7,8 +7,7 @@ interface Pokemon {
 }
 
 export default function Index() {
-
-  const [pokemon , Setpokemons] = useState<Pokemon[]>([]);
+  const [pokemon, Setpokemons] = useState<Pokemon[]>([]);
   useEffect(() => {
     //! Fetch Pokemon
     fetchPokemon();
@@ -16,17 +15,29 @@ export default function Index() {
   async function fetchPokemon() {
     try {
       const response = await fetch(
-        "https://pokeapi.co/api/v2/pokemon/?limit=20",
+        "https://pokeapi.co/api/v2/pokemon/?limit=5",
       );
       const Data = await response.json();
-      Setpokemons(Data.results);
+      // Fetch detailed info for each Pokémon in parallel
+      const detailedPokemons = await Promise.all(
+        Data.results.map(async (pokemon:any) => {
+          const res = await fetch(pokemon.url);
+          const details = await res.json();
+          return {
+            name: pokemon.name,
+            image: details.sprites.front_default, // main sprite
+          };
+        }),
+      );
+      Setpokemons(detailedPokemons);
+      // Setpokemons(Data.results);
     } catch (erorr) {
       console.log(erorr);
     }
   }
   return (
     <ScrollView>
-      {pokemon.map((pokemon)=>(
+      {pokemon.map((pokemon) => (
         <View key={pokemon.name}>
           <Text>{pokemon.name}</Text>
         </View>
